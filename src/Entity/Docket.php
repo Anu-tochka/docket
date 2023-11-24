@@ -3,39 +3,33 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use ApiPlatform\Metadata\Get;
-use ApiPlatform\Metadata\GetCollection;
-use ApiPlatform\Metadata\Post;
-use ApiPlatform\Metadata\Put;
-use ApiPlatform\Metadata\Delete;
-use ApiPlatform\OpenApi\Model\Operation as OpenApiOperation;
+use ApiPlatform\Metadata\GraphQl\DeleteMutation;
+use ApiPlatform\Metadata\GraphQl\Mutation;
+use ApiPlatform\Metadata\GraphQl\Query;
+use ApiPlatform\Metadata\GraphQl\QueryCollection;
 use App\Repository\DocketRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
+use App\Resolver\CreatorResolver;
 
 #[ORM\Entity(repositoryClass: DocketRepository::class)]
-#[ApiResource(
-    operations: [
-        new Get(normalizationContext: ['groups' => 'docket:item']),
-        new GetCollection(normalizationContext: ['groups' => 'docket:list']),
-		new Post(normalizationContext: ['groups' => 'docket:item'], 
-				status: 301
-		),
-        new Put(),
-        new Delete()
-    ],
-    order: ['isDone' => 'DESC', 'name' => 'ASC'],
-    paginationEnabled: false,
+#[ApiResource(graphQlOperations: [
+    new Query(resolver: CreatorResolver::class),
+    new QueryCollection(),
+    new Mutation(name: 'create'),
+    new Mutation(name: 'update'),
+    new DeleteMutation(name: 'delete'),
+]
 )]
 class Docket
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
-	#[Groups(['docket:list', 'docket:item'])]
     private ?int $id = null;
 
+	#[Groups(['docket:list', 'docket:item'])]
     #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $dateCreate = null;
 
@@ -48,8 +42,8 @@ class Docket
     private ?string $inform = null;
 
     #[ORM\Column]
-	#[Groups(['docket:list', 'docket:item'])]
-    private ?bool $isDone = null;
+//	#[Groups(['docket:list', 'docket:item'])]
+    private ?bool $isDone = false;
 
     public function getId(): ?int
     {
