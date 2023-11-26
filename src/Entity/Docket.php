@@ -11,13 +11,19 @@ use App\Repository\DocketRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Serializer\Annotation\Groups;
-use App\Resolver\CreatorResolver;
+use App\Resolver\FindResolver;
+use App\Resolver\CreateMutationResolver;
 
 #[ORM\Entity(repositoryClass: DocketRepository::class)]
 #[ApiResource(graphQlOperations: [
-    new Query(resolver: CreatorResolver::class),
+    new Query(resolver: FindResolver::class),
     new QueryCollection(),
-    new Mutation(name: 'create'),
+    new Mutation(name: 'create',resolver: CreateMutationResolver::class,
+        args: [
+            'dateCreate' => ['Date'],
+            'name' => ['String'],
+            'inform' => ['String']
+        ]),
     new Mutation(name: 'update'),
     new DeleteMutation(name: 'delete'),
 ]
