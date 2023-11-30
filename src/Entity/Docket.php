@@ -13,6 +13,7 @@ use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
 use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
+use ApiPlatform\Doctrine\Orm\Filter\DateFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Resolver\FindResolver;
 use App\Resolver\CreateMutationResolver;
@@ -33,6 +34,7 @@ use App\Resolver\CreateMutationResolver;
 ]
 )]
 #[ApiFilter(OrderFilter::class, properties: ['docket.isDone'])]
+#[ApiFilter(DateFilter::class, properties: ['dateCreate'])]
 class Docket
 {
     #[ORM\Id]

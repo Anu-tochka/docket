@@ -23,3 +23,8 @@ services:
     App\Resolver\FindResolver:
         tags:
             - { name: api_platform.graphql.query_resolver }
+    
+    offer.date_filter:
+        parent: 'api_platform.doctrine.orm.date_filter'
+        arguments: [ { dateCreate: ~ } ]
+        tags:  [ 'api_platform.filter' ]
