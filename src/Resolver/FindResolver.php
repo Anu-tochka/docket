@@ -9,7 +9,7 @@ use App\Repository\DocketRepository;
 //use Doctrine\ORM\Mapping as ORM;
 //use Symfony\Component\Serializer\Annotation\Groups;
 
-class CreatorResolver implements QueryItemResolverInterface
+class FindResolver implements QueryItemResolverInterface
 {
     public function __construct(private readonly DocketRepository $repository) {
     }
@@ -21,12 +21,6 @@ class CreatorResolver implements QueryItemResolverInterface
      */
     public function __invoke(?object $item, array $context): object
     {
-        if (!isset($context['args']['slug'])) {
-            throw new ItemNotFoundException();
-        }
-
-        Assert::isInstanceOf($item, Docket::class);
-
         return $item;
     }
 }

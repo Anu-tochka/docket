@@ -7,9 +7,12 @@ use ApiPlatform\Metadata\GraphQl\DeleteMutation;
 use ApiPlatform\Metadata\GraphQl\Mutation;
 use ApiPlatform\Metadata\GraphQl\Query;
 use ApiPlatform\Metadata\GraphQl\QueryCollection;
+use ApiPlatform\Metadata\ApiFilter;
 use App\Repository\DocketRepository;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use ApiPlatform\Doctrine\Orm\Filter\OrderFilter;
+use ApiPlatform\Doctrine\Orm\Filter\SearchFilter;
 use Symfony\Component\Serializer\Annotation\Groups;
 use App\Resolver\FindResolver;
 use App\Resolver\CreateMutationResolver;
@@ -18,16 +21,18 @@ use App\Resolver\CreateMutationResolver;
 #[ApiResource(graphQlOperations: [
     new Query(resolver: FindResolver::class),
     new QueryCollection(),
-    new Mutation(name: 'create',resolver: CreateMutationResolver::class,
-        args: [
-            'dateCreate' => ['Date'],
-            'name' => ['String'],
-            'inform' => ['String']
-        ]),
+    new Mutation(name: 'create',
+                resolver: CreateMutationResolver::class,
+                args: [
+                    'dateCreate' => '[Date]',
+                    'name' => '[String]',
+                    'inform' => '[String]'
+                ]),
     new Mutation(name: 'update'),
     new DeleteMutation(name: 'delete'),
 ]
 )]
+#[ApiFilter(OrderFilter::class, properties: ['docket.isDone'])]
 class Docket
 {
     #[ORM\Id]
